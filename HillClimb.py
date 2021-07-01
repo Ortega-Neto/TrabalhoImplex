@@ -9,6 +9,7 @@ import math
 import datetime
 import random
 
+
 # Realiza a leitura do arquivo input e chama a
 # função transformarInputEmMatriz() para transformar em matriz
 def realizarLeituraDoInput():
@@ -52,11 +53,11 @@ def criarCaminhoInicialAleatorio(matrizInput, tamanhoDoCaminho):
     nomes = []
     for vertice in matrizInput:
         nomes.append(vertice[0])
-    return gerarCaminhosAleatoriosVizinhos(nomes, tamanhoDoCaminho)
+    return gerarVizinhosAleatorios(nomes, tamanhoDoCaminho)
 
 
 # Gera uma lista de caminhos aleatórios, vizinhos do caminho atual
-def gerarCaminhosAleatoriosVizinhos(caminhoAtual, tamanhoDoCaminho):
+def gerarVizinhosAleatorios(caminhoAtual, tamanhoDoCaminho):
     vizinhos = []
     caminho = caminhoAtual
 
@@ -68,27 +69,32 @@ def gerarCaminhosAleatoriosVizinhos(caminhoAtual, tamanhoDoCaminho):
     return vizinhos
 
 
-def retornaDistanciaDoCaminho(matrizDasDistancias, caminho):
+# Realiza o Calculo da Distancia do caminho, somando todos os valores
+# e retorna este resultado
+def retornaDistanciaDoCaminho(matrizDasDistancias, caminhoAtual):
     distanciaDoCaminho = 0
-    for i in range(len(caminho) - 1):
-        distanciaDoCaminho += matrizDasDistancias[int(caminho[i]) - 1][int(caminho[i + 1]) - 1]
+    for i in range(len(caminhoAtual) - 1):
+        distanciaDoCaminho += matrizDasDistancias[int(caminhoAtual[i]) - 1][int(caminhoAtual[i + 1]) - 1]
     return distanciaDoCaminho
 
 
-def gerarVizinhos(caminho):
+# Gera vizinhos do caminho enviado, por meio de swaps aleatórios
+def gerarVizinhosDoCaminhoAtual(caminhoAtual):
     vizinhos = []
-    for i in range(len(caminho)):
-        for j in range(i + 1, len(caminho)):
-            vizinho = caminho.copy()
-            vizinho[i] = caminho[j]
-            vizinho[j] = caminho[i]
+    for i in range(len(caminhoAtual)):
+        for j in range(i + 1, len(caminhoAtual)):
+            vizinho = caminhoAtual.copy()
+            vizinho[i] = caminhoAtual[j]
+            vizinho[j] = caminhoAtual[i]
             vizinhos.append(vizinho)
     return vizinhos
 
 
-def calcularMelhorVizinho(matrizDasDistancias, vizinhos):
-    melhorDistancia = 1000000000000000
-    melhorVizinho = []
+# Realiza a verificação de qual é o melhor vizinho e retorna ele e
+# sua respectiva distância
+def retornaOMelhorVizinho(matrizDasDistancias, vizinhos):
+    melhorDistancia = retornaDistanciaDoCaminho(matrizDasDistancias, vizinhos[0])
+    melhorVizinho = vizinhos[0]
 
     for vizinho in vizinhos:
         distanciaAtual = retornaDistanciaDoCaminho(matrizDasDistancias, vizinho)
@@ -100,18 +106,19 @@ def calcularMelhorVizinho(matrizDasDistancias, vizinhos):
     return melhorVizinho, melhorDistancia
 
 
+# Realiza o calculo do TSP pelo algoritmo do Hill Climb
 def hillClimb(matrizDasDistancias, caminhoInicial):
     solucaoAtual = caminhoInicial
     distanciaAtual = retornaDistanciaDoCaminho(matrizDasDistancias, caminhoInicial)
 
-    vizinhos = gerarVizinhos(caminhoInicial)
-    melhorVizinho, melhorDistancia = calcularMelhorVizinho(matrizDasDistancias, vizinhos)
+    vizinhos = gerarVizinhosDoCaminhoAtual(solucaoAtual)
+    melhorVizinho, melhorDistancia = retornaOMelhorVizinho(matrizDasDistancias, vizinhos)
 
     while melhorDistancia < distanciaAtual:
         solucaoAtual = melhorVizinho
         distanciaAtual = melhorDistancia
-        vizinhos = gerarVizinhos(solucaoAtual)
-        melhorVizinho, melhorDistancia = calcularMelhorVizinho(matrizDasDistancias, vizinhos)
+        vizinhos = gerarVizinhosDoCaminhoAtual(solucaoAtual)
+        melhorVizinho, melhorDistancia = retornaOMelhorVizinho(matrizDasDistancias, vizinhos)
 
     return solucaoAtual, distanciaAtual
 
@@ -124,7 +131,12 @@ if __name__ == '__main__':
     matrizDasDistancias, tamanhoDoCaminho = gerarMatrizEuclidianaETamanho(matrizInput)
 
     caminhoInicial = criarCaminhoInicialAleatorio(matrizInput, tamanhoDoCaminho)
-    print(hillClimb(matrizDasDistancias, caminhoInicial))
+    melhorCaminho, melhorDistencia = hillClimb(matrizDasDistancias, caminhoInicial)
+
+    print()
+    print("Melhor caminho -> ", melhorCaminho)
+    print("Distância deste caminho -> ", melhorDistencia)
+    print()
 
     # Finalização da contagem de tempo
     final = datetime.datetime.now()
