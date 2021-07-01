@@ -1,3 +1,10 @@
+# Alunos: Luiz Carlos Ortega Neto
+#         RGA:2020.1906.011-3
+#         Curso: Engenharia de Software
+#         Rodolfo Miguel Alves dos Santos
+#         RGA: 2017.1906.118-1
+#         Curso: Engenharia de Software
+
 import math
 import datetime
 import random
