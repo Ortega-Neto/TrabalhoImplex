@@ -44,6 +44,7 @@ def retornaNomeDosVertices():
         nomes.append(vertice[0])
     return nomes
 
+
 def gerarCaminhoAleatorio(caminhoAtual):
     solucao = []
     cidades = caminhoAtual
@@ -105,25 +106,25 @@ def hillClimb(caminhoInicial, distanciaInicial):
 
 
 if __name__ == '__main__':
-    #Inicio de contagem de tempo
+    # Inicio de contagem de tempo
     inicio = datetime.datetime.now()
 
-    #Leitura dos Arquivos e criação das variáveis
+    # Leitura dos Arquivos e criação das variáveis
     matrizDeVertices = leArquivoTxt()
 
     # Criação da Matriz das Distâncias
     calcularAsDistanciasEntreOsVertices()
 
-    #Caminho Inicial, ordem de inserção
+    # Caminho Inicial, ordem de inserção
     caminhoInicial = retornaNomeDosVertices()
 
-    #Inicialização das variáveis para o calculo co Hill Climb
+    # Inicialização das variáveis para o calculo co Hill Climb
     caminho = gerarCaminhoAleatorio(caminhoInicial)
     distanciaDaRota = calcularADistanciaDaRota(caminho)
 
-    #Calculo do Hill Climb
+    # Calculo do Hill Climb
     print(hillClimb(caminho, distanciaDaRota))
 
-    #Finalização da contagem de tempo
+    # Finalização da contagem de tempo
     final = datetime.datetime.now()
     print("tempo de execução", final - inicio)

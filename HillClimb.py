@@ -9,65 +9,70 @@ import math
 import datetime
 import random
 
-matrizDeDistancias = []  # Matriz que contém as distâncias
-matrizDeVertices = []
-tamanhoDaMatriz = []
+# Realiza a leitura do arquivo input e chama a
+# função transformarInputEmMatriz() para transformar em matriz
+def realizarLeituraDoInput():
+    input = open("input.txt", "r")
+    return transformarInputEmMatriz(input)
 
 
-def leArquivoTxt():
-    arquivo = open("entrada.txt", "r")
-    return transformaEmVetor(arquivo)
+# Realiza a transformação do que foi lido no arquivo em uma matriz
+def transformarInputEmMatriz(input):
+    linhas = input.readlines()
+    matrizInput = []
+
+    for l in linhas:
+        matrizInput.append(l.split())
+
+    input.close()
+    return matrizInput
 
 
-def transformaEmVetor(arquivo):
-    linhas = arquivo.readlines()
-    matrizLida = []
-
-    for elemento in linhas:
-        matrizLida.append(elemento.split())
-
-    arquivo.close()
-    return matrizLida
-
-
-def calcularAsDistanciasEntreOsVertices():
+# Gera a matriz fazendo calculo da distância euclidiana e salvando
+# as distancias de todos os vertices. Retorna essa matriz e o seu tamanho
+def gerarMatrizEuclidianaETamanho(matrizInput):
+    matrizDasDistancias = []
     i = 0
-    for vertice in matrizDeVertices:
+    for verticeX in matrizInput:
         distancia = []
-        for verticeParaCalcular in matrizDeVertices:
-            x = int(vertice[1]) - int(verticeParaCalcular[1])
-            x = x * x
-            y = int(vertice[2]) - int(verticeParaCalcular[2])
-            y = y * y
+        for verticeY in matrizInput:
+            x = int(verticeX[1]) - int(verticeY[1])
+            x = pow(x, 2)
+            y = int(verticeX[2]) - int(verticeY[2])
+            y = pow(y, 2)
             distancia.append(math.sqrt(x + y))
-        matrizDeDistancias.append(distancia)
+        matrizDasDistancias.append(distancia)
         i += 1
-    tamanhoDaMatriz.append(i)
+    lengthDaMatriz = i
+    return matrizDasDistancias, lengthDaMatriz
 
 
-def retornaNomeDosVertices():
+# Gera um caminho aleatório inicial, baseado nos números dos vertices
+def criarCaminhoInicialAleatorio(matrizInput, tamanhoDoCaminho):
     nomes = []
-    for vertice in matrizDeVertices:
+    for vertice in matrizInput:
         nomes.append(vertice[0])
-    return nomes
-
-def gerarCaminhoAleatorio(caminhoAtual):
-    solucao = []
-    cidades = caminhoAtual
-
-    for i in range(tamanhoDaMatriz[0]):
-        caminhoAleatorio = cidades[random.randint(0, len(cidades) - 1)]
-        solucao.append(caminhoAleatorio)
-        cidades.remove(caminhoAleatorio)
-
-    return solucao
+    return gerarCaminhosAleatoriosVizinhos(nomes, tamanhoDoCaminho)
 
 
-def calcularADistanciaDaRota(caminho):
-    distancia = 0
+# Gera uma lista de caminhos aleatórios, vizinhos do caminho atual
+def gerarCaminhosAleatoriosVizinhos(caminhoAtual, tamanhoDoCaminho):
+    vizinhos = []
+    caminho = caminhoAtual
+
+    for i in range(tamanhoDoCaminho):
+        vizinhoAleatorio = caminho[random.randint(0, len(caminho) - 1)]
+        vizinhos.append(vizinhoAleatorio)
+        caminho.remove(vizinhoAleatorio)
+
+    return vizinhos
+
+
+def retornaDistanciaDoCaminho(matrizDasDistancias, caminho):
+    distanciaDoCaminho = 0
     for i in range(len(caminho) - 1):
-        distancia += matrizDeDistancias[int(caminho[i]) - 1][int(caminho[i + 1]) - 1]
-    return distancia
+        distanciaDoCaminho += matrizDasDistancias[int(caminho[i]) - 1][int(caminho[i + 1]) - 1]
+    return distanciaDoCaminho
 
 
 def gerarVizinhos(caminho):
@@ -81,12 +86,12 @@ def gerarVizinhos(caminho):
     return vizinhos
 
 
-def calcularMelhorVizinho(vizinhos):
+def calcularMelhorVizinho(matrizDasDistancias, vizinhos):
     melhorDistancia = 1000000000000000
     melhorVizinho = []
 
     for vizinho in vizinhos:
-        distanciaAtual = calcularADistanciaDaRota(vizinho)
+        distanciaAtual = retornaDistanciaDoCaminho(matrizDasDistancias, vizinho)
 
         if distanciaAtual < melhorDistancia:
             melhorDistancia = distanciaAtual
@@ -95,42 +100,32 @@ def calcularMelhorVizinho(vizinhos):
     return melhorVizinho, melhorDistancia
 
 
-def hillClimb(caminhoInicial, distanciaInicial):
+def hillClimb(matrizDasDistancias, caminhoInicial):
     solucaoAtual = caminhoInicial
-    distanciaAtual = distanciaInicial
+    distanciaAtual = retornaDistanciaDoCaminho(matrizDasDistancias, caminhoInicial)
 
     vizinhos = gerarVizinhos(caminhoInicial)
-    melhorVizinho, melhorDistancia = calcularMelhorVizinho(vizinhos)
+    melhorVizinho, melhorDistancia = calcularMelhorVizinho(matrizDasDistancias, vizinhos)
 
     while melhorDistancia < distanciaAtual:
         solucaoAtual = melhorVizinho
         distanciaAtual = melhorDistancia
         vizinhos = gerarVizinhos(solucaoAtual)
-        melhorVizinho, melhorDistancia = calcularMelhorVizinho(vizinhos)
+        melhorVizinho, melhorDistancia = calcularMelhorVizinho(matrizDasDistancias, vizinhos)
 
     return solucaoAtual, distanciaAtual
 
 
 if __name__ == '__main__':
-    #Inicio de contagem de tempo
+    # Start na contagem do tempo
     inicio = datetime.datetime.now()
 
-    #Leitura dos Arquivos e criação das variáveis
-    matrizDeVertices = leArquivoTxt()
+    matrizInput = realizarLeituraDoInput()
+    matrizDasDistancias, tamanhoDoCaminho = gerarMatrizEuclidianaETamanho(matrizInput)
 
-    # Criação da Matriz das Distâncias
-    calcularAsDistanciasEntreOsVertices()
+    caminhoInicial = criarCaminhoInicialAleatorio(matrizInput, tamanhoDoCaminho)
+    print(hillClimb(matrizDasDistancias, caminhoInicial))
 
-    #Caminho Inicial, ordem de inserção
-    caminhoInicial = retornaNomeDosVertices()
-
-    #Inicialização das variáveis para o calculo co Hill Climb
-    caminho = gerarCaminhoAleatorio(caminhoInicial)
-    distanciaDaRota = calcularADistanciaDaRota(caminho)
-
-    #Calculo do Hill Climb
-    print(hillClimb(caminho, distanciaDaRota))
-
-    #Finalização da contagem de tempo
+    # Finalização da contagem de tempo
     final = datetime.datetime.now()
-    print("tempo de execução", final - inicio)
+    print("Tempo Total de execução = ", final - inicio)
