@@ -125,8 +125,8 @@ def hillClimb(matrizDasDistancias, caminhoInicial):
 
 # Realiza o calculo do TSP pelo algoritmo do Simulated Annealing
 def simulatedAnnealing(matrizDasDistancias, caminhoInicial):
-    t = input("Insira o t: ")
-    t = int(t)
+    temperatura = input("Insira uma temperatura: ")
+    temperatura = float(temperatura)
     distancia = input("Insira a distancia: ")
     distancia = int(distancia)
     numeroDeInteracoes = input("Insira a quantidade de interações: ")
@@ -136,7 +136,7 @@ def simulatedAnnealing(matrizDasDistancias, caminhoInicial):
     distanciaAtual = retornaDistanciaDoCaminho(matrizDasDistancias, caminhoInicial)
 
     for i in range(numeroDeInteracoes):
-        t *= distancia
+        temperatura *= distancia
         vizinhos = gerarVizinhosDoCaminhoAtual(solucaoAtual)
         melhorVizinho, melhorDistancia = retornaOMelhorVizinho(matrizDasDistancias, vizinhos)
 
@@ -145,7 +145,7 @@ def simulatedAnnealing(matrizDasDistancias, caminhoInicial):
             distanciaAtual = melhorDistancia
         else:
             x = random.random()
-            if x < math.exp((melhorDistancia - distanciaAtual) / t):
+            if x < math.exp((melhorDistancia - distanciaAtual) / temperatura):
                 solucaoAtual = melhorVizinho
                 distanciaAtual = melhorDistancia
 

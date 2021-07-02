@@ -132,7 +132,7 @@ if __name__ == '__main__':
     distanciaDaRota = calcularADistanciaDaRota(caminho)
 
     # Calculo do Simulated Annealing
-    print(simulatedAnnealing(caminho, distanciaDaRota, int(interacoes), int(t), int(distancia)))
+    print(simulatedAnnealing(caminho, distanciaDaRota, int(interacoes), float(t), int(distancia)))
 
     # Finalização da contagem de tempo
     final = datetime.datetime.now()
