@@ -28,9 +28,9 @@ def calcularAsDistanciasEntreOsVertices():
     for vertice in matrizDeVertices:
         distancia = []
         for verticeParaCalcular in matrizDeVertices:
-            x = int(vertice[1]) - int(verticeParaCalcular[1])
+            x = float(vertice[1]) - float(verticeParaCalcular[1])
             x = x * x
-            y = int(vertice[2]) - int(verticeParaCalcular[2])
+            y = float(vertice[2]) - float(verticeParaCalcular[2])
             y = y * y
             distancia.append(math.sqrt(x + y))
         matrizDeDistancias.append(distancia)
@@ -123,8 +123,10 @@ if __name__ == '__main__':
     distanciaDaRota = calcularADistanciaDaRota(caminho)
 
     # Calculo do Hill Climb
-    print(hillClimb(caminho, distanciaDaRota))
+    solucao, distancia = hillClimb(caminho, distanciaDaRota)
+    print("Solucao ", solucao)
+    print("Distancia Solucao " + "{:.2f}".format(distancia))
 
     # Finalização da contagem de tempo
     final = datetime.datetime.now()
-    print("tempo de execução", final - inicio)
+    print("Tempo de execução", final - inicio)

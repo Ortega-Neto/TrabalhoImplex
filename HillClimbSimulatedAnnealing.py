@@ -37,9 +37,9 @@ def gerarMatrizEuclidianaETamanho(matrizInput):
     for verticeX in matrizInput:
         distancia = []
         for verticeY in matrizInput:
-            x = int(verticeX[1]) - int(verticeY[1])
+            x = float(verticeX[1]) - float(verticeY[1])
             x = pow(x, 2)
-            y = int(verticeX[2]) - int(verticeY[2])
+            y = float(verticeX[2]) - float(verticeY[2])
             y = pow(y, 2)
             distancia.append(math.sqrt(x + y))
         matrizDasDistancias.append(distancia)
@@ -187,4 +187,4 @@ if __name__ == '__main__':
     print()
     # Finalização da contagem de tempo
     finalSimulatedAnnealing = datetime.datetime.now()
-    print("Tempo Total de execução do Hill Climb = ", finalSimulatedAnnealing - inicioSimulatedAnnealing)
+    print("Tempo Total de execução do Simulated Annealing = ", finalSimulatedAnnealing - inicioSimulatedAnnealing)

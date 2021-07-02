@@ -28,9 +28,9 @@ def calcularAsDistanciasEntreOsVertices():
     for vertice in matrizDeVertices:
         distancia = []
         for verticeParaCalcular in matrizDeVertices:
-            x = int(vertice[1]) - int(verticeParaCalcular[1])
+            x = float(vertice[1]) - float(verticeParaCalcular[1])
             x = x * x
-            y = int(vertice[2]) - int(verticeParaCalcular[2])
+            y = float(vertice[2]) - float(verticeParaCalcular[2])
             y = y * y
             distancia.append(math.sqrt(x + y))
         matrizDeDistancias.append(distancia)
@@ -111,9 +111,9 @@ def simulatedAnnealing(caminhoInicial, distanciaInicial, interacoes, t, distanci
 
 
 if __name__ == '__main__':
+    interacoes = input("Insira uma quantidade de interações: ")
     t = input("Insira um t: ")
     distancia = input("Insira uma distancia: ")
-    interacoes = input("Insira uma quantidade de interações: ")
 
     # Inicio de contagem de tempo
     inicio = datetime.datetime.now()
@@ -132,7 +132,9 @@ if __name__ == '__main__':
     distanciaDaRota = calcularADistanciaDaRota(caminho)
 
     # Calculo do Simulated Annealing
-    print(simulatedAnnealing(caminho, distanciaDaRota, int(interacoes), float(t), int(distancia)))
+    solucao, distancia = simulatedAnnealing(caminho, distanciaDaRota, int(interacoes), float(t), int(distancia))
+    print("Solucao ", solucao)
+    print("Distancia Solucao " + "{:.2f}".format(distancia))
 
     # Finalização da contagem de tempo
     final = datetime.datetime.now()
