@@ -123,9 +123,38 @@ def hillClimb(matrizDasDistancias, caminhoInicial):
     return solucaoAtual, distanciaAtual
 
 
+# Realiza o calculo do TSP pelo algoritmo do Simulated Annealing
+def simulatedAnnealing(matrizDasDistancias, caminhoInicial):
+    t = input("Insira o t: ")
+    t = int(t)
+    distancia = input("Insira a distancia: ")
+    distancia = int(distancia)
+    numeroDeInteracoes = input("Insira a quantidade de interações: ")
+    numeroDeInteracoes = int(numeroDeInteracoes)
+
+    solucaoAtual = caminhoInicial
+    distanciaAtual = retornaDistanciaDoCaminho(matrizDasDistancias, caminhoInicial)
+
+    for i in range(numeroDeInteracoes):
+        t *= distancia
+        vizinhos = gerarVizinhosDoCaminhoAtual(solucaoAtual)
+        melhorVizinho, melhorDistancia = retornaOMelhorVizinho(matrizDasDistancias, vizinhos)
+
+        if melhorDistancia < distanciaAtual:
+            solucaoAtual = melhorVizinho
+            distanciaAtual = melhorDistancia
+        else:
+            x = random.random()
+            if x < math.exp((melhorDistancia - distanciaAtual) / t):
+                solucaoAtual = melhorVizinho
+                distanciaAtual = melhorDistancia
+
+    return solucaoAtual, distanciaAtual
+
+
 if __name__ == '__main__':
     # Start na contagem do tempo
-    inicio = datetime.datetime.now()
+    inicioHillClimb = datetime.datetime.now()
 
     matrizInput = realizarLeituraDoInput()
     matrizDasDistancias, tamanhoDoCaminho = gerarMatrizEuclidianaETamanho(matrizInput)
@@ -134,10 +163,27 @@ if __name__ == '__main__':
     melhorCaminho, melhorDistencia = hillClimb(matrizDasDistancias, caminhoInicial)
 
     print()
+    print("____________________________________________________________________________________________________")
+    print("Hill Climb")
+    print()
     print("Melhor caminho -> ", melhorCaminho)
     print("Distância deste caminho -> ", melhorDistencia)
     print()
 
     # Finalização da contagem de tempo
-    final = datetime.datetime.now()
-    print("Tempo Total de execução = ", final - inicio)
+    finalHillClimb = datetime.datetime.now()
+    print("Tempo Total de execução do Hill Climb = ", finalHillClimb - inicioHillClimb)
+    print()
+
+    inicioSimulatedAnnealing = datetime.datetime.now()
+    melhorCaminho, melhorDistencia = simulatedAnnealing(matrizDasDistancias, caminhoInicial)
+    print()
+    print("____________________________________________________________________________________________________")
+    print("Simulated Annealing")
+    print()
+    print("Melhor caminho -> ", melhorCaminho)
+    print("Distância deste caminho -> ", melhorDistencia)
+    print()
+    # Finalização da contagem de tempo
+    finalSimulatedAnnealing = datetime.datetime.now()
+    print("Tempo Total de execução do Hill Climb = ", finalSimulatedAnnealing - inicioSimulatedAnnealing)
